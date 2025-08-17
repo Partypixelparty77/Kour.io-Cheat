@@ -1,43 +1,50 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orbit - Kour.io Userscript</title>
+    <title>Orbit - Kour.io Enhancement Suite</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
         :root {
-            --primary-color: #39ff14; /* Neon Grün */
+            --primary-color: #00ff00; /* Bright Green */
             --background-color: #000000;
             --text-color: #e0e0e0;
-            --container-bg: rgba(10, 10, 10, 0.85);
+            --container-bg: rgba(10, 10, 10, 0.8);
+            --border-color: #00ff00;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border-radius: 0 !important; /* Force angular design */
         }
 
         body {
             background-color: var(--background-color);
             color: var(--text-color);
-            font-family: 'Roboto Mono', monospace;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
+            font-family: 'Orbitron', sans-serif;
+            line-height: 1.6;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
-        #matrix-canvas {
+        #background-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         .container {
-            max-width: 960px;
+            width: 100%;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 20px;
             z-index: 1;
@@ -46,205 +53,276 @@
 
         .header {
             text-align: center;
-            padding: 60px 20px;
-            border-bottom: 2px solid var(--primary-color);
-            animation: fadeInGlow 2s ease-in-out;
+            padding: 50px 20px;
+            border-bottom: 2px solid var(--border-color);
+            animation: fadeIn 2s ease-in-out;
+            margin-bottom: 40px;
         }
 
         .header h1 {
-            font-size: 4em;
+            font-size: 4.5em;
             color: var(--primary-color);
-            text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px #fff;
+            text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
             margin: 0;
-            letter-spacing: 5px;
-            animation: slideInDown 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+            letter-spacing: 6px;
+            text-transform: uppercase;
         }
 
         .header p {
             font-size: 1.2em;
             color: var(--text-color);
-            animation: slideInUp 1.5s cubic-bezier(0.23, 1, 0.32, 1);
             margin-top: 10px;
+            letter-spacing: 2px;
         }
 
         .main-content {
             padding: 40px;
             background-color: var(--container-bg);
-            border: 1px solid var(--primary-color);
-            border-radius: 8px;
-            box-shadow: 0 0 25px rgba(57, 255, 20, 0.3);
-            backdrop-filter: blur(10px);
-            animation: zoomIn 1s ease-in-out;
-            margin-top: 40px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(8px);
+            animation: zoomIn 1s ease-out;
         }
 
         .main-content h2 {
+            font-size: 2em;
             color: var(--primary-color);
-            border-bottom: 1px solid var(--primary-color);
-            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .features-grid li {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-left: 3px solid var(--primary-color);
+            padding: 15px;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        
+        .features-grid li:hover {
+            transform: translateX(5px);
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+
+        .features-grid strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
         }
 
         .btn-container {
             text-align: center;
-            margin: 40px 0;
+            margin: 50px 0;
         }
 
         .btn {
             background-color: transparent;
             color: var(--primary-color);
-            padding: 15px 30px;
+            padding: 18px 40px;
             text-decoration: none;
-            font-size: 1.2em;
-            border-radius: 5px;
+            font-size: 1.4em;
             border: 2px solid var(--primary-color);
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px var(--primary-color);
+            box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.5), 0 0 10px rgba(0, 255, 0, 0.5);
             text-transform: uppercase;
             font-weight: bold;
+            letter-spacing: 2px;
         }
 
         .btn:hover {
             background-color: var(--primary-color);
             color: var(--background-color);
-            box-shadow: 0 0 25px var(--primary-color), 0 0 35px #fff;
-            transform: scale(1.05);
+            box-shadow: inset 0 0 0 rgba(0, 255, 0, 0.5), 0 0 25px rgba(0, 255, 0, 1);
         }
 
         .installation-guide ol {
-            line-height: 1.8;
-            padding-left: 20px;
+            line-height: 2;
+            padding-left: 25px;
+            list-style-type: none;
+            counter-reset: step-counter;
         }
 
         .installation-guide li {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            counter-increment: step-counter;
+            position: relative;
+        }
+        
+        .installation-guide li::before {
+            content: "0" counter(step-counter);
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2em;
+            position: absolute;
+            left: -40px;
+            top: 0;
         }
 
         .installation-guide a {
             color: var(--primary-color);
             text-decoration: none;
             font-weight: bold;
-            transition: text-shadow 0.3s;
+            border-bottom: 1px dotted var(--primary-color);
+            transition: color 0.3s, border-bottom 0.3s;
         }
 
         .installation-guide a:hover {
-            text-shadow: 0 0 5px var(--primary-color);
+            color: #fff;
+            border-bottom: 1px solid #fff;
         }
 
         .footer {
             text-align: center;
-            padding: 20px;
+            padding: 25px;
             margin-top: auto;
-            color: #666;
+            color: #555;
             z-index: 1;
+            border-top: 1px solid #222;
         }
 
-        /* Animationen */
-        @keyframes fadeInGlow {
-            from { opacity: 0; border-bottom-color: transparent; }
-            to { opacity: 1; border-bottom-color: var(--primary-color); }
-        }
-
-        @keyframes slideInDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes slideInUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         @keyframes zoomIn {
-            from { transform: scale(0.9); opacity: 0; }
+            from { transform: scale(0.95); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <canvas id="matrix-canvas"></canvas>
-
-    <div class="header">
-        <h1>Orbit</h1>
-        <p>Das ultimative Userscript für Kour.io</p>
-    </div>
+    <canvas id="background-canvas"></canvas>
 
     <div class="container">
-        <div class="main-content">
-            <h2>Willkommen bei Orbit</h2>
-            <p>
-                Orbit ist ein Userscript, das entwickelt wurde, um dir erweiterte Funktionen und ein verbessertes Gameplay in kour.io zu bieten. Mit einer Vielzahl von Cheats, darunter Speed Hack und Unsichtbarkeit, hebt Orbit dein Spiel auf die nächste Stufe.
-            </p>
+        <header class="header">
+            <h1>ORBIT</h1>
+            <p>The Ultimate Enhancement Suite for Kour.io</p>
+        </header>
 
-            <div class="btn-container">
-                <!-- Dieser Link muss auf deine rohe script.js Datei auf GitHub zeigen -->
+        <main class="main-content">
+            <section id="features">
+                <h2>Core Features</h2>
+                <ul class="features-grid">
+                    <li><strong>Aimbot</strong>Aim assistance with FOV circle visualization.</li>
+                    <li><strong>Player ESP</strong>See players through walls with customizable colors.</li>
+                    <li><strong>Invisibility</strong>Become impossible to hit by blocking damage packets.</li>
+                    <li><strong>Speed Hack</strong>Adjust the game speed with a simple slider.</li>
+                    <li><strong>Air Strafing</strong>Execute perfect strafes automatically while in the air.</li>
+                    <li><strong>Anti-Aim</strong>Makes you harder to hit by manipulating your aim data.</li>
+                    <li><strong>Spin Bot</strong>Confuse your enemies with erratic spinning movements.</li>
+                    <li><strong>Instakill</strong>Rapidly send attack packets to overwhelm opponents.</li>
+                    <li><strong>Item Unlocker</strong>Equip any skin, secondary weapon, or melee weapon.</li>
+                    <li><strong>Profile Stats Editor</strong>Modify your public stats like Kills, ELO, Wins, etc.</li>
+                    <li><strong>Visual Customization</strong>Hide your arms or the in-game crosshair.</li>
+                    <li><strong>Advanced UI</strong>Modern, draggable CS2-style menu with organized tabs.</li>
+                </ul>
+            </section>
+
+            <section id="download" class="btn-container">
+                <!-- This link points to the script.js file in the same repository -->
                 <a href="script.js" class="btn">Download & Install</a>
-            </div>
+            </section>
 
-            <div class="installation-guide">
-                <h2>Installationsanleitung</h2>
-                <ol>
-                    <li>
-                        <strong>Userscript-Manager installieren:</strong> Du benötigst einen Userscript-Manager. Wir empfehlen <a href="https://www.tampermonkey.net/" target="_blank">Tampermonkey</a>, verfügbar für Chrome, Firefox, Safari und Edge.
-                    </li>
-                    <li>
-                        <strong>Download-Button klicken:</strong> Klicke auf den "Download & Install"-Button oben auf dieser Seite.
-                    </li>
-                    <li>
-                        <strong>Installation bestätigen:</strong> Dein Userscript-Manager (Tampermonkey) öffnet sich in einem neuen Tab. Überprüfe die Details und klicke auf "Installieren".
-                    </li>
-                    <li>
-                        <strong>Spiel starten:</strong> Besuche <a href="https://kour.io/" target="_blank">kour.io</a>. Das Skript ist jetzt aktiv. Drücke die Taste <strong>'o'</strong>, um das Menü zu öffnen.
-                    </li>
-                </ol>
-            </div>
-        </div>
+            <section id="installation">
+                <h2>Installation Guide</h2>
+                <div class="installation-guide">
+                    <ol>
+                        <li>
+                            <strong>Install a Userscript Manager:</strong> You need an extension to manage userscripts. We recommend <a href="https://www.tampermonkey.net/" target="_blank">Tampermonkey</a>, available for Chrome, Firefox, Safari, and Edge.
+                        </li>
+                        <li>
+                            <strong>Click the Download Button:</strong> Press the "Download & Install" button located above on this page.
+                        </li>
+                        <li>
+                            <strong>Confirm Installation:</strong> Your userscript manager will open in a new tab. Review the script details and click the "Install" button.
+                        </li>
+                        <li>
+                            <strong>Launch the Game:</strong> Navigate to <a href="https://kour.io/" target="_blank">kour.io</a>. The script is now active. Press the <strong>'o'</strong> key to open and close the Orbit menu.
+                        </li>
+                    </ol>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <div class="footer">
-        <p>&copy; 2025 Orbit Userscript. Alle Rechte vorbehalten.</p>
-    </div>
+    <footer class="footer">
+        <p>&copy; 2025 Orbit. All rights reserved. Use responsibly.</p>
+    </footer>
 
     <script>
-        const canvas = document.getElementById('matrix-canvas');
+        const canvas = document.getElementById('background-canvas');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        let particlesArray;
 
-        const letters = 'ORBITv5.3-ハック-CHEAT-SCRIPT-0101';
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
 
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#39ff14'; // Neon Grün
-            ctx.font = fontSize + 'px "Roboto Mono"';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
+        // Particle class
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * -canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speed = Math.random() * 3 + 1;
+                this.drift = (Math.random() - 0.5) * 0.5;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += this.drift;
+                if (this.y > canvas.height) {
+                    this.y = 0 - this.size;
+                    this.x = Math.random() * canvas.width;
+                    this.speed = Math.random() * 3 + 1;
+                    this.drift = (Math.random() - 0.5) * 0.5;
                 }
-                drops[i]++;
+            }
+            draw() {
+                ctx.fillStyle = '#00ff00';
+                ctx.fillRect(this.x, this.y, this.size, this.size * 3); // rectangular "digital snow"
             }
         }
 
-        setInterval(draw, 40);
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            drops.length = 0;
-            const newColumns = canvas.width / fontSize;
-            for(let x = 0; x < newColumns; x++) {
-                drops[x] = 1;
+        // Create particle array
+        function init() {
+            setCanvasSize();
+            particlesArray = [];
+            const numberOfParticles = (canvas.width * canvas.height) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
             }
+        }
+
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // Event listener for window resize
+        window.addEventListener('resize', () => {
+            init();
         });
+
+        init();
+        animate();
     </script>
 </body>
 </html>
