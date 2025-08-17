@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbit - Kour.io Userscript</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-color: #39ff14; /* Neon Grün */
+            --background-color: #000000;
+            --text-color: #e0e0e0;
+            --container-bg: rgba(10, 10, 10, 0.85);
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+            z-index: 1;
+            flex-grow: 1;
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+            border-bottom: 2px solid var(--primary-color);
+            animation: fadeInGlow 2s ease-in-out;
+        }
+
+        .header h1 {
+            font-size: 4em;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px #fff;
+            margin: 0;
+            letter-spacing: 5px;
+            animation: slideInDown 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: var(--text-color);
+            animation: slideInUp 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+            margin-top: 10px;
+        }
+
+        .main-content {
+            padding: 40px;
+            background-color: var(--container-bg);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(57, 255, 20, 0.3);
+            backdrop-filter: blur(10px);
+            animation: zoomIn 1s ease-in-out;
+            margin-top: 40px;
+        }
+
+        .main-content h2 {
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--primary-color);
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            padding: 15px 30px;
+            text-decoration: none;
+            font-size: 1.2em;
+            border-radius: 5px;
+            border: 2px solid var(--primary-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px var(--primary-color);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            box-shadow: 0 0 25px var(--primary-color), 0 0 35px #fff;
+            transform: scale(1.05);
+        }
+
+        .installation-guide ol {
+            line-height: 1.8;
+            padding-left: 20px;
+        }
+
+        .installation-guide li {
+            margin-bottom: 10px;
+        }
+
+        .installation-guide a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: text-shadow 0.3s;
+        }
+
+        .installation-guide a:hover {
+            text-shadow: 0 0 5px var(--primary-color);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            color: #666;
+            z-index: 1;
+        }
+
+        /* Animationen */
+        @keyframes fadeInGlow {
+            from { opacity: 0; border-bottom-color: transparent; }
+            to { opacity: 1; border-bottom-color: var(--primary-color); }
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-canvas"></canvas>
+
+    <div class="header">
+        <h1>Orbit</h1>
+        <p>Das ultimative Userscript für Kour.io</p>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <h2>Willkommen bei Orbit</h2>
+            <p>
+                Orbit ist ein Userscript, das entwickelt wurde, um dir erweiterte Funktionen und ein verbessertes Gameplay in kour.io zu bieten. Mit einer Vielzahl von Cheats, darunter Speed Hack und Unsichtbarkeit, hebt Orbit dein Spiel auf die nächste Stufe.
+            </p>
+
+            <div class="btn-container">
+                <!-- Dieser Link muss auf deine rohe script.js Datei auf GitHub zeigen -->
+                <a href="script.js" class="btn">Download & Install</a>
+            </div>
+
+            <div class="installation-guide">
+                <h2>Installationsanleitung</h2>
+                <ol>
+                    <li>
+                        <strong>Userscript-Manager installieren:</strong> Du benötigst einen Userscript-Manager. Wir empfehlen <a href="https://www.tampermonkey.net/" target="_blank">Tampermonkey</a>, verfügbar für Chrome, Firefox, Safari und Edge.
+                    </li>
+                    <li>
+                        <strong>Download-Button klicken:</strong> Klicke auf den "Download & Install"-Button oben auf dieser Seite.
+                    </li>
+                    <li>
+                        <strong>Installation bestätigen:</strong> Dein Userscript-Manager (Tampermonkey) öffnet sich in einem neuen Tab. Überprüfe die Details und klicke auf "Installieren".
+                    </li>
+                    <li>
+                        <strong>Spiel starten:</strong> Besuche <a href="https://kour.io/" target="_blank">kour.io</a>. Das Skript ist jetzt aktiv. Drücke die Taste <strong>'o'</strong>, um das Menü zu öffnen.
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Orbit Userscript. Alle Rechte vorbehalten.</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = 'ORBITv5.3-ハック-CHEAT-SCRIPT-0101';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#39ff14'; // Neon Grün
+            ctx.font = fontSize + 'px "Roboto Mono"';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 40);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            drops.length = 0;
+            const newColumns = canvas.width / fontSize;
+            for(let x = 0; x < newColumns; x++) {
+                drops[x] = 1;
+            }
+        });
+    </script>
+</body>
+</html>
